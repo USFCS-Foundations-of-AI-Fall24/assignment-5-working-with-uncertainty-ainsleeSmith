@@ -1,5 +1,6 @@
 
-from sklearn.datasets import load_iris
+
+from sklearn.datasets import load_breast_cancer
 from sklearn import tree
 from sklearn.model_selection import KFold
 from sklearn.ensemble import RandomForestClassifier, HistGradientBoostingClassifier
@@ -11,14 +12,16 @@ import joblib
 ### This code shows how to use KFold to do cross_validation.
 ### This is just one of many ways to manage training and test sets in sklearn.
 
-iris = load_iris()
+iris = load_breast_cancer()
 X, y = iris.data, iris.target
 scores = []
 kf = KFold(n_splits=5)
 for train_index, test_index in kf.split(X) :
     X_train, X_test, y_train, y_test = \
         (X[train_index], X[test_index], y[train_index], y[test_index])
-    clf = tree.DecisionTreeClassifier()
+    # clf = tree.DecisionTreeClassifier()
+    # clf = RandomForestClassifier(criterion='gini', n_estimators=50) # TODO compute avg from console outcome to put in doc
+    clf = RandomForestClassifier(criterion='entropy', n_estimators=50)
     clf.fit(X_train, y_train)
     scores.append(clf.score(X_test, y_test))
 
@@ -41,11 +44,12 @@ models = {
         max_leaf_nodes=15, random_state=0, early_stopping=False
     ),
 }
+
 param_grids = {
-    "Random Forest": {"n_estimators": [10, 20, 50, 100]},
-    "Hist Gradient Boosting": {"max_iter": [10, 20, 50, 100, 300, 500]},
+    "Random Forest": {"n_estimators": [5, 10, 15, 20]},
+    "Hist Gradient Boosting": {"max_iter": [25, 50, 75, 100]},
 }
-cv = KFold(n_splits=2, shuffle=True, random_state=0)
+cv = KFold(n_splits=5, shuffle=True, random_state=0)
 
 results = []
 for name, model in models.items():
@@ -59,9 +63,9 @@ for name, model in models.items():
     results.append(result)
 
 print(results)
-
-#### Part 3: This shows how to generate a scatter plot of your results
-
+#
+# #### Part 3: This shows how to generate a scatter plot of your results
+#
 import plotly.colors as colors
 import plotly.express as px
 from plotly.subplots import make_subplots
