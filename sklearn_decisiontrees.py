@@ -27,6 +27,8 @@ for train_index, test_index in kf.split(X) :
 
 print(scores)
 
+
+
 ## Part 2. This code (from https://scikit-learn.org/1.5/auto_examples/ensemble/plot_forest_hist_grad_boosting_comparison.html)
 ## shows how to use GridSearchCV to do a hyperparameter search to compare two techniques.
 from sklearn.datasets import load_breast_cancer
