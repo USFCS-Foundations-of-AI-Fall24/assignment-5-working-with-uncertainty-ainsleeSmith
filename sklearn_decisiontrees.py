@@ -20,8 +20,8 @@ for train_index, test_index in kf.split(X) :
     X_train, X_test, y_train, y_test = \
         (X[train_index], X[test_index], y[train_index], y[test_index])
     # clf = tree.DecisionTreeClassifier()
-    # clf = RandomForestClassifier(criterion='gini', n_estimators=50) # TODO compute avg from console outcome to put in doc
-    clf = RandomForestClassifier(criterion='entropy', n_estimators=50)
+    clf = RandomForestClassifier(criterion='gini', n_estimators=50) # TODO compute avg from console outcome to put in doc
+    # clf = RandomForestClassifier(criterion='entropy', n_estimators=50)
     clf.fit(X_train, y_train)
     scores.append(clf.score(X_test, y_test))
 
