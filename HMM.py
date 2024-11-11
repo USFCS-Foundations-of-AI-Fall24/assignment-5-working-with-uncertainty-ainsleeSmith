@@ -130,7 +130,7 @@ class HMM:
 
         # set up the matrix
         O = sequence.outputseq.split()
-        col = len(O) + 1
+        col = len(O) #TODO might need to change back to + 1
         rows = len(self.emissions.keys())
         M = numpy.zeros((rows,col))
 
@@ -150,10 +150,11 @@ class HMM:
             m = m + 1
 
         t = col
-        for i in range(1, (t-1)): #TODO may need to change back to (2,t)
+        for i in range(1, t): #TODO may need to change back to (2,t)
+            m = -1
             for s in self.emissions.keys():
                 sum = 0
-                m = 0 # this will be placeholder for rows [happy, grumpy, hungry]
+                m = m + 1# this will be placeholder for rows [happy, grumpy, hungry]
                 for s2 in self.emissions.keys():
                     sub_trans = self.transitions[s2]
                     T = sub_trans[s]
@@ -161,9 +162,21 @@ class HMM:
                     sub_emiss = self.emissions[s2]
                     E = sub_emiss[O[i]]
                     sum += M[m, i - 1] * float(T) * float(E)
-                    m = m + 1
                 M[m, i] = sum
-        return M[rows-1, col-1]
+
+        max = 0
+        i = 0
+        m = 0 # this will be placeholder for rows [happy, grumpy, hungry]
+        best = 0
+        while i < rows :
+            if M[i,col-1] > max :
+                max = M[i,col-1]
+                best = m
+            i = i + 1
+            m = m + 1
+        states = list(self.emissions.keys())
+        state = states[best]
+        return state
 
 
 
@@ -179,7 +192,7 @@ if __name__ == "__main__" :
     # h.load('partofspeech')
     # print(h.transitions)
     # print(h.emissions)
-    l = h.generate(20)
+    l = h.generate(5)
     k = h.forward(l)
     print(k)
 
