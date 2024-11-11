@@ -157,12 +157,15 @@ class HMM:
                 sum = 0
                 m = m + 1# this will be placeholder for rows [happy, grumpy, hungry]
                 m2 = 1# this will be placeholder for rows [happy, grumpy, hungry]
-                sub_emiss = self.emissions[s2]
-                E = sub_emiss[O[i]]
+                # sub_emiss = self.emissions[s2]
+                E = 0.0
                 for s2 in self.emissions.keys():
+                    if m2 == 1 :
+                        sub_emiss = self.emissions[s]
+                        E = sub_emiss[O[i-1]]
                     sub_trans = self.transitions[s2]
                     T = sub_trans[s]
-                    thing = O[i]
+                    thing = O[i-1]
                     # sub_emiss = self.emissions[s2]
                     # E = sub_emiss[O[i]]
                     prev = M[m2, i - 1]
@@ -172,7 +175,7 @@ class HMM:
 
         # returns the state corresponding with the highest value in the last column of matrix
         max = 0
-        i = 0
+        i = 1
         m = 0 # this will be placeholder for rows [happy, grumpy, hungry]
         best = 0
         while i < rows :
@@ -199,11 +202,12 @@ if __name__ == "__main__" :
     # h.load('partofspeech')
     # print(h.transitions)
     # print(h.emissions)
-    l = h.generate(5)
+    l = h.generate(20)
+    # print(l)
     predicted_states = list(l.stateseq.split())
     print("actual end state: ")
     print(predicted_states[-1])
-    l.outputseq = 'purr silent silent meow meow'
+    # l.outputseq = 'purr silent silent meow meow'
     k = h.forward(l)
     print("predicted end state: ")
     print(k)
