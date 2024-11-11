@@ -130,40 +130,47 @@ class HMM:
 
         # set up the matrix
         O = sequence.outputseq.split()
-        col = len(O) #TODO might need to change back to + 1
-        rows = len(self.emissions.keys())
+        col = len(O) + 1 #TODO might need to change back to + 1
+        rows = len(self.transitions.keys())
         M = numpy.zeros((rows,col))
 
         ## set up the initial probabilities from the start state (states[0] to observation 1.
+        M[0,0] = 1.0
         ## T is the transition probabilities, E is the emission probabilities
         ## O is the vector of observations.
 
-        m = 0 # this will be placeholder for rows [happy, grumpy, hungry]
+        m = 1 # this will be placeholder for rows [happy, grumpy, hungry]
         for s in self.emissions.keys():
-            sub_trans = self.transitions[s]
+            sub_trans = self.transitions['#']
             T = sub_trans[s]
             sub_emiss = self.emissions[s]
             E = sub_emiss[O[0]]
             prob = float(T) * float(E)
-            M[m, 0] = prob  ## the probability of that state * the probability of that state given observation 1.
+            M[m, 1] = prob  ## the probability of that state * the probability of that state given observation 1.
             #TODO ^ may need to change back to [i,1]
             m = m + 1
 
         t = col
-        for i in range(1, t): #TODO may need to change back to (2,t)
-            m = -1
+        for i in range(2, t): #TODO may need to change back to (2,t)
+            m = 0
             for s in self.emissions.keys():
                 sum = 0
                 m = m + 1# this will be placeholder for rows [happy, grumpy, hungry]
+                m2 = 1# this will be placeholder for rows [happy, grumpy, hungry]
+                sub_emiss = self.emissions[s2]
+                E = sub_emiss[O[i]]
                 for s2 in self.emissions.keys():
                     sub_trans = self.transitions[s2]
                     T = sub_trans[s]
                     thing = O[i]
-                    sub_emiss = self.emissions[s2]
-                    E = sub_emiss[O[i]]
-                    sum += M[m, i - 1] * float(T) * float(E)
+                    # sub_emiss = self.emissions[s2]
+                    # E = sub_emiss[O[i]]
+                    prev = M[m2, i - 1]
+                    sum += prev * float(T) * float(E)
+                    m2 = m2 + 1
                 M[m, i] = sum
 
+        # returns the state corresponding with the highest value in the last column of matrix
         max = 0
         i = 0
         m = 0 # this will be placeholder for rows [happy, grumpy, hungry]
@@ -193,6 +200,11 @@ if __name__ == "__main__" :
     # print(h.transitions)
     # print(h.emissions)
     l = h.generate(5)
+    predicted_states = list(l.stateseq.split())
+    print("actual end state: ")
+    print(predicted_states[-1])
+    l.outputseq = 'purr silent silent meow meow'
     k = h.forward(l)
+    print("predicted end state: ")
     print(k)
 
