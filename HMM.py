@@ -132,7 +132,7 @@ class HMM:
         O = sequence.outputseq.split()
         col = len(O) + 1 #TODO might need to change back to + 1
         rows = len(self.transitions.keys())
-        M = numpy.zeros((rows,col))
+        M = numpy.empty((rows,col))
 
         ## set up the initial probabilities from the start state (states[0] to observation 1.
         M[0,0] = 1.0
@@ -191,9 +191,60 @@ class HMM:
 
 
     def viterbi(self, sequence):
-        pass
     ## You do this. Given a sequence with a list of emissions, fill in the most likely
     ## hidden states using the Viterbi algorithm.
+        # set up the matrix
+        O = sequence.outputseq.split()
+        col = len(O) + 1 #TODO might need to change back to + 1
+        rows = len(self.transitions.keys())
+        N = numpy.empty((rows,col))
+
+        ## set up the initial probabilities from the start state (states[0] to observation 1.
+        N[0,0] = 1.0
+        ## T is the transition probabilities, E is the emission probabilities
+        ## O is the vector of observations.
+
+        m = 1 # this will be placeholder for rows [happy, grumpy, hungry]
+        for s in self.emissions.keys():
+            sub_trans = self.transitions['#']
+            T = sub_trans[s]
+            sub_emiss = self.emissions[s]
+            E = sub_emiss[O[0]]
+            prob = float(T) * float(E)
+            N[m, 1] = prob  ## the probability of that state * the probability of that state given observation 1.
+            #TODO ^ may need to change back to [i,1]
+            m = m + 1
+
+        # i = 0
+        # for observ in O : # iterate through observations
+        # while i < len(O) :
+
+        t = col
+        for i in range(2, t):
+            m = 0
+            for s in self.emissions.keys():
+                # max = 0
+                prod_list = []
+                m = m + 1  # this will be placeholder for rows [happy, grumpy, hungry]
+                m2 = 1  # this will be placeholder for rows [happy, grumpy, hungry]
+                # sub_emiss = self.emissions[s2]
+                E = 0.0
+                for s2 in self.emissions.keys():
+                    if m2 == 1:
+                        sub_emiss = self.emissions[s]
+                        E = sub_emiss[O[i - 1]]
+                    sub_trans = self.transitions[s2]
+                    T = sub_trans[s]
+                    thing = O[i - 1]
+                    prev = N[m2, i - 1]
+                    prod = prev * float(T) * float(E)
+                    prod_list.append(prod)
+                    m2 = m2 + 1
+                # val = max[prod_list]
+                N[m, i] = max(prod_list)
+
+        # print("hello")
+
 
 
 if __name__ == "__main__" :
@@ -202,13 +253,16 @@ if __name__ == "__main__" :
     # h.load('partofspeech')
     # print(h.transitions)
     # print(h.emissions)
-    l = h.generate(20)
+    l = h.generate(5)
     # print(l)
     predicted_states = list(l.stateseq.split())
     print("actual end state: ")
     print(predicted_states[-1])
-    # l.outputseq = 'purr silent silent meow meow'
+    l.outputseq = 'purr silent silent meow meow'
     k = h.forward(l)
     print("predicted end state: ")
     print(k)
+
+    n = h.viterbi(l)
+
 
