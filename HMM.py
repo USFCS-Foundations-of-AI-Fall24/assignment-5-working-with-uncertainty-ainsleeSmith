@@ -198,6 +198,7 @@ class HMM:
         col = len(O) + 1 #TODO might need to change back to + 1
         rows = len(self.transitions.keys())
         N = numpy.empty((rows,col))
+        bp = numpy.empty((rows,col))
 
         ## set up the initial probabilities from the start state (states[0] to observation 1.
         N[0,0] = 1.0
@@ -240,10 +241,11 @@ class HMM:
                     prod = prev * float(T) * float(E)
                     prod_list.append(prod)
                     m2 = m2 + 1
-                # val = max[prod_list]
-                N[m, i] = max(prod_list)
+                val = max(prod_list)
+                N[m, i] = val
+                bp[m, i] = prod_list.index(val) + 1
 
-        # print("hello")
+        print("hello")
 
 
 
