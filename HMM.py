@@ -245,7 +245,40 @@ class HMM:
                 N[m, i] = val
                 bp[m, i] = prod_list.index(val) + 1
 
-        print("hello")
+        # print("hello")
+
+        predicted_list = []
+        semi = N[:,(col-1)]
+        bestN = max(semi)
+        # semi2 = bp[:,(col-1)]
+        best = list(semi).index(bestN)
+        j = len(O)
+        while j > 0 :
+            predicted_list.append(int(best))
+            best = bp[int(best), j]
+            j = j -1
+
+        #populate list with state names
+        predicted_states = []
+        states = list(self.transitions.keys())
+        for s in predicted_list :
+            predicted_states.append(states[s])
+
+        predicted_states.reverse()
+
+        return predicted_states
+
+
+
+
+
+        # return predicted_list
+
+        # print("")
+        # while i < rows :
+        #     if M[i, col - 1] > max:
+
+
 
 
 
@@ -266,5 +299,6 @@ if __name__ == "__main__" :
     print(k)
 
     n = h.viterbi(l)
+    print(n)
 
 
