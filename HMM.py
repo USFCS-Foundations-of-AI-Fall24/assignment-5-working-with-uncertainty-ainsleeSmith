@@ -4,6 +4,8 @@ import random
 import argparse
 import codecs
 import os
+import sys
+
 import numpy
 from jinja2.compiler import generate
 from sympy import sequence
@@ -144,7 +146,10 @@ class HMM:
             sub_trans = self.transitions['#']
             T = sub_trans[s]
             sub_emiss = self.emissions[s]
-            E = sub_emiss[O[0]]
+            if O[0] in sub_emiss :
+                E = sub_emiss[O[0]]
+            else :
+                E = 0
             prob = float(T) * float(E)
             M[m, 1] = prob  ## the probability of that state * the probability of that state given observation 1.
             #TODO ^ may need to change back to [i,1]
@@ -162,7 +167,10 @@ class HMM:
                 for s2 in self.emissions.keys():
                     if m2 == 1 :
                         sub_emiss = self.emissions[s]
-                        E = sub_emiss[O[i-1]]
+                        if O[i-1] in sub_emiss:
+                            E = sub_emiss[O[i-1]]
+                        else :
+                            E = 0
                     sub_trans = self.transitions[s2]
                     T = sub_trans[s]
                     thing = O[i-1]
@@ -210,7 +218,10 @@ class HMM:
             sub_trans = self.transitions['#']
             T = sub_trans[s]
             sub_emiss = self.emissions[s]
-            E = sub_emiss[O[0]]
+            if O[0] in sub_emiss:
+                E = sub_emiss[O[0]]
+            else:
+                E = 0
             prob = float(T) * float(E)
             N[m, 1] = prob  ## the probability of that state * the probability of that state given observation 1.
             #TODO ^ may need to change back to [i,1]
@@ -233,7 +244,10 @@ class HMM:
                 for s2 in self.emissions.keys():
                     if m2 == 1:
                         sub_emiss = self.emissions[s]
-                        E = sub_emiss[O[i - 1]]
+                        if O[i - 1] in sub_emiss :
+                            E = sub_emiss[O[i - 1]]
+                        else :
+                            E = 0
                     sub_trans = self.transitions[s2]
                     T = sub_trans[s]
                     thing = O[i - 1]
@@ -279,26 +293,63 @@ class HMM:
         #     if M[i, col - 1] > max:
 
 
-
-
-
 if __name__ == "__main__" :
+    filename = sys.argv[1]
     h = HMM()
-    h.load('cat')
-    # h.load('partofspeech')
+    h.load(filename)
     # print(h.transitions)
     # print(h.emissions)
-    l = h.generate(5)
-    # print(l)
-    predicted_states = list(l.stateseq.split())
-    print("actual end state: ")
-    print(predicted_states[-1])
-    l.outputseq = 'purr silent silent meow meow'
-    k = h.forward(l)
-    print("predicted end state: ")
-    print(k)
 
-    n = h.viterbi(l)
-    print(n)
+    if sys.argv[2] == '--generate' :
+        l = h.generate(int(sys.argv[3]))
+        print(l)
+    elif sys.argv[2] == '--forward' :
+        words = []
+        out = ''
+        file = open(sys.argv[3])
+        for line in file :
+            words = line.split()
+            if len(words) > 0 :
+                for word in words :
+                    out = out + word + ' '
+            i = len(words) - 1
+            l = h.generate(i)
+            l.outputseq = out
+            k = h.forward(l)
+            print(k)
+    elif sys.argv[2] == '--viterbi' :
+        file = open(sys.argv[3])
+        for line in file:
+            words = []
+            words = line.split()
+            out = ''
+            if len(words) > 0:
+                for word in words:
+                    out = out + word + ' '
+                i = len(words) - 1
+                l = h.generate(i)
+                l.outputseq = out
+                n = h.viterbi(l)
+                print(n)
+# if __name__ == "__main__" :
+#     h = HMM()
+#     # h.load('lander')
+#     # h.load('partofspeech')
+#     print(h.transitions)
+#     # print(h.emissions)
+#     l = h.generate(5)
+#     # print(l)
+#     predicted_states = list(l.stateseq.split())
+#     # print("actual end state: ")
+#     # print(predicted_states[-1])
+#     # l.outputseq = 'purr silent silent meow meow'
+#     l.outputseq = '1,1 2,2 2,2 3,3 4,3'
+#     # l.outputseq = 'flies waited at the window .'
+#     k = h.forward(l)
+#     print("predicted end state: ")
+#     print(k)
+#
+#     n = h.viterbi(l)
+#     print(n)
 
 
