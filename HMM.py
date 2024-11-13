@@ -304,19 +304,19 @@ if __name__ == "__main__" :
         l = h.generate(int(sys.argv[3]))
         print(l)
     elif sys.argv[2] == '--forward' :
-        words = []
-        out = ''
         file = open(sys.argv[3])
-        for line in file :
+        for line in file:
+            words = []
             words = line.split()
-            if len(words) > 0 :
-                for word in words :
+            out = ''
+            if len(words) > 0:
+                for word in words:
                     out = out + word + ' '
-            i = len(words) - 1
-            l = h.generate(i)
-            l.outputseq = out
-            k = h.forward(l)
-            print(k)
+                i = len(words) - 1
+                l = h.generate(i)
+                l.outputseq = out
+                n = h.forward(l)
+                print(n)
     elif sys.argv[2] == '--viterbi' :
         file = open(sys.argv[3])
         for line in file:
@@ -331,6 +331,7 @@ if __name__ == "__main__" :
                 l.outputseq = out
                 n = h.viterbi(l)
                 print(n)
+
 # if __name__ == "__main__" :
 #     h = HMM()
 #     # h.load('lander')
