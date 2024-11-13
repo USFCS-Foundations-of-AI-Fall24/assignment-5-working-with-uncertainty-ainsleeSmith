@@ -60,6 +60,7 @@ class HMM:
             d2[l[1]] = l[2]
         d1[start_word] = d2
         self.transitions = d1
+        file.close()
 
         # Fill out emissions dictionary
         file = open(basename + '.emit')
@@ -77,6 +78,7 @@ class HMM:
             d2[l[1]] = l[2]
         d1[start_word] = d2
         self.emissions = d1
+        file.close()
 
 
    ## you do this.
