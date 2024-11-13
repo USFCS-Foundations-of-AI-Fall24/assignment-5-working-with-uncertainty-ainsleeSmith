@@ -144,7 +144,10 @@ class HMM:
         m = 1 # this will be placeholder for rows [happy, grumpy, hungry]
         for s in self.emissions.keys():
             sub_trans = self.transitions['#']
-            T = sub_trans[s]
+            if s in sub_trans :
+                T = sub_trans[s]
+            else:
+                T = 0
             sub_emiss = self.emissions[s]
             if O[0] in sub_emiss :
                 E = sub_emiss[O[0]]
@@ -172,7 +175,10 @@ class HMM:
                         else :
                             E = 0
                     sub_trans = self.transitions[s2]
-                    T = sub_trans[s]
+                    if s in sub_trans:
+                        T = sub_trans[s]
+                    else:
+                        T = 0
                     thing = O[i-1]
                     # sub_emiss = self.emissions[s2]
                     # E = sub_emiss[O[i]]
@@ -216,7 +222,10 @@ class HMM:
         m = 1 # this will be placeholder for rows [happy, grumpy, hungry]
         for s in self.emissions.keys():
             sub_trans = self.transitions['#']
-            T = sub_trans[s]
+            if s in sub_trans :
+                T = sub_trans[s]
+            else:
+                T = 0
             sub_emiss = self.emissions[s]
             if O[0] in sub_emiss:
                 E = sub_emiss[O[0]]
@@ -249,7 +258,10 @@ class HMM:
                         else :
                             E = 0
                     sub_trans = self.transitions[s2]
-                    T = sub_trans[s]
+                    if s in sub_trans:
+                        T = sub_trans[s]
+                    else:
+                        T = 0
                     thing = O[i - 1]
                     prev = N[m2, i - 1]
                     prod = prev * float(T) * float(E)
@@ -293,64 +305,71 @@ class HMM:
         #     if M[i, col - 1] > max:
 
 
+# if __name__ == "__main__" :
+#     filename = sys.argv[1]
+#     h = HMM()
+#     h.load(filename)
+#     # print(h.transitions)
+#     # print(h.emissions)
+#
+#     if sys.argv[2] == '--generate' :
+#         l = h.generate(int(sys.argv[3]))
+#         print(l)
+#     elif sys.argv[2] == '--forward' :
+#         file = open(sys.argv[3])
+#         for line in file:
+#             words = []
+#             words = line.split()
+#             out = ''
+#             if len(words) > 0:
+#                 for word in words:
+#                     out = out + word + ' '
+#                 i = len(words) - 1
+#                 l = h.generate(i)
+#                 l.outputseq = out
+#                 n = h.forward(l)
+#                 print("Most probable state:")
+#                 print(n)
+#                 if filename == 'lander' :
+#                     if n == '4,3' or n == '3,4' or n == '2,5' or n == '4,4' or n == '5,5' :
+#                         print("It is safe to land!")
+#                     else:
+#                         print("Oh no! It is not safe to land!")
+#     elif sys.argv[2] == '--viterbi' :
+#         file = open(sys.argv[3])
+#         for line in file:
+#             words = []
+#             words = line.split()
+#             out = ''
+#             if len(words) > 0:
+#                 for word in words:
+#                     out = out + word + ' '
+#                 i = len(words) - 1
+#                 l = h.generate(i)
+#                 l.outputseq = out
+#                 n = h.viterbi(l)
+#                 print(n)
+
 if __name__ == "__main__" :
-    filename = sys.argv[1]
     h = HMM()
-    h.load(filename)
+    # h.load('lander')
+    h.load('partofspeech')
+    u = h.transitions
     # print(h.transitions)
     # print(h.emissions)
+    l = h.generate(6)
+    # print(l)
+    predicted_states = list(l.stateseq.split())
+    # print("actual end state: ")
+    # print(predicted_states[-1])
+    # l.outputseq = 'purr silent silent meow meow'
+    # l.outputseq = '1,1 2,2 2,2 3,3 4,3'
+    l.outputseq = 'the train is arriving now .'
+    k = h.forward(l)
+    print("predicted end state: ")
+    print(k)
 
-    if sys.argv[2] == '--generate' :
-        l = h.generate(int(sys.argv[3]))
-        print(l)
-    elif sys.argv[2] == '--forward' :
-        file = open(sys.argv[3])
-        for line in file:
-            words = []
-            words = line.split()
-            out = ''
-            if len(words) > 0:
-                for word in words:
-                    out = out + word + ' '
-                i = len(words) - 1
-                l = h.generate(i)
-                l.outputseq = out
-                n = h.forward(l)
-                print(n)
-    elif sys.argv[2] == '--viterbi' :
-        file = open(sys.argv[3])
-        for line in file:
-            words = []
-            words = line.split()
-            out = ''
-            if len(words) > 0:
-                for word in words:
-                    out = out + word + ' '
-                i = len(words) - 1
-                l = h.generate(i)
-                l.outputseq = out
-                n = h.viterbi(l)
-                print(n)
-
-# if __name__ == "__main__" :
-#     h = HMM()
-#     # h.load('lander')
-#     # h.load('partofspeech')
-#     print(h.transitions)
-#     # print(h.emissions)
-#     l = h.generate(5)
-#     # print(l)
-#     predicted_states = list(l.stateseq.split())
-#     # print("actual end state: ")
-#     # print(predicted_states[-1])
-#     # l.outputseq = 'purr silent silent meow meow'
-#     l.outputseq = '1,1 2,2 2,2 3,3 4,3'
-#     # l.outputseq = 'flies waited at the window .'
-#     k = h.forward(l)
-#     print("predicted end state: ")
-#     print(k)
-#
-#     n = h.viterbi(l)
-#     print(n)
+    n = h.viterbi(l)
+    print(n)
 
 
