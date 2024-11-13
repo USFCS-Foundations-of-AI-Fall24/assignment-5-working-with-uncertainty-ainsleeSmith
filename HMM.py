@@ -82,7 +82,6 @@ class HMM:
    ## you do this.
     def generate(self, n):
         """return an n-length Sequence by randomly sampling from this HMM."""
-        # pass
         trans = ''
         emiss = ''
         state = '#'
@@ -129,10 +128,9 @@ class HMM:
     def forward(self, sequence):
     ## you do this: Implement the Forward algorithm. Given a Sequence with a list of emissions,
     ## determine the most likely sequence of states.
-
         # set up the matrix
         O = sequence.outputseq.split()
-        col = len(O) + 1 #TODO might need to change back to + 1
+        col = len(O) + 1
         rows = len(self.transitions.keys())
         M = numpy.zeros((rows,col))
 
@@ -155,17 +153,15 @@ class HMM:
                 E = 0
             prob = float(T) * float(E)
             M[m, 1] = prob  ## the probability of that state * the probability of that state given observation 1.
-            #TODO ^ may need to change back to [i,1]
             m = m + 1
 
         t = col
-        for i in range(2, t): #TODO may need to change back to (2,t)
+        for i in range(2, t):
             m = 0
             for s in self.emissions.keys():
                 sum = 0
                 m = m + 1# this will be placeholder for rows [happy, grumpy, hungry]
                 m2 = 1# this will be placeholder for rows [happy, grumpy, hungry]
-                # sub_emiss = self.emissions[s2]
                 E = 0.0
                 for s2 in self.emissions.keys():
                     if m2 == 1 :
@@ -180,8 +176,6 @@ class HMM:
                     else:
                         T = 0
                     thing = O[i-1]
-                    # sub_emiss = self.emissions[s2]
-                    # E = sub_emiss[O[i]]
                     prev = M[m2, i - 1]
                     sum += prev * float(T) * float(E)
                     m2 = m2 + 1
@@ -209,7 +203,7 @@ class HMM:
     ## hidden states using the Viterbi algorithm.
         # set up the matrix
         O = sequence.outputseq.split()
-        col = len(O) + 1 #TODO might need to change back to + 1
+        col = len(O) + 1
         rows = len(self.transitions.keys())
         N = numpy.zeros((rows,col))
         bp = numpy.zeros((rows,col))
@@ -233,22 +227,15 @@ class HMM:
                 E = 0
             prob = float(T) * float(E)
             N[m, 1] = prob  ## the probability of that state * the probability of that state given observation 1.
-            #TODO ^ may need to change back to [i,1]
             m = m + 1
-
-        # i = 0
-        # for observ in O : # iterate through observations
-        # while i < len(O) :
 
         t = col
         for i in range(2, t):
             m = 0
             for s in self.emissions.keys():
-                # max = 0
                 prod_list = []
                 m = m + 1  # this will be placeholder for rows [happy, grumpy, hungry]
                 m2 = 1  # this will be placeholder for rows [happy, grumpy, hungry]
-                # sub_emiss = self.emissions[s2]
                 E = 0.0
                 for s2 in self.emissions.keys():
                     if m2 == 1:
@@ -271,12 +258,9 @@ class HMM:
                 N[m, i] = val
                 bp[m, i] = prod_list.index(val) + 1
 
-        # print("hello")
-
         predicted_list = []
         semi = N[:,(col-1)]
         bestN = max(semi)
-        # semi2 = bp[:,(col-1)]
         best = list(semi).index(bestN)
         j = len(O)
         while j > 0 :
@@ -286,26 +270,13 @@ class HMM:
 
         #populate list with state names
         predicted_states = []
-        # states = list(self.transitions.keys())
         states = list(self.emissions.keys())
         for s in predicted_list :
-            # sub_list = self.transitions[states[s]]
             predicted_states.append(states[s-1])
 
         predicted_states.reverse()
 
         return predicted_states
-
-
-
-
-
-
-        # return predicted_list
-
-        # print("")
-        # while i < rows :
-        #     if M[i, col - 1] > max:
 
 
 if __name__ == "__main__" :
