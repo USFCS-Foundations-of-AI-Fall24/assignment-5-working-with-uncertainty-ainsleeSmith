@@ -286,9 +286,11 @@ class HMM:
 
         #populate list with state names
         predicted_states = []
-        states = list(self.transitions.keys())
+        # states = list(self.transitions.keys())
+        states = list(self.emissions.keys())
         for s in predicted_list :
-            predicted_states.append(states[s])
+            # sub_list = self.transitions[states[s]]
+            predicted_states.append(states[s-1])
 
         predicted_states.reverse()
 
@@ -306,72 +308,73 @@ class HMM:
         #     if M[i, col - 1] > max:
 
 
-# if __name__ == "__main__" :
-#     filename = sys.argv[1]
-#     h = HMM()
-#     h.load(filename)
-#     # print(h.transitions)
-#     # print(h.emissions)
-#
-#     if sys.argv[2] == '--generate' :
-#         l = h.generate(int(sys.argv[3]))
-#         print(l)
-#     elif sys.argv[2] == '--forward' :
-#         file = open(sys.argv[3])
-#         for line in file:
-#             words = []
-#             words = line.split()
-#             out = ''
-#             if len(words) > 0:
-#                 for word in words:
-#                     out = out + word + ' '
-#                 i = len(words) - 1
-#                 l = h.generate(i)
-#                 l.outputseq = out
-#                 n = h.forward(l)
-#                 print("Most probable state:")
-#                 print(n)
-#                 if filename == 'lander' :
-#                     if n == '4,3' or n == '3,4' or n == '2,5' or n == '4,4' or n == '5,5' :
-#                         print("It is safe to land!")
-#                     else:
-#                         print("Oh no! It is not safe to land!")
-#     elif sys.argv[2] == '--viterbi' :
-#         file = open(sys.argv[3])
-#         for line in file:
-#             words = []
-#             words = line.split()
-#             out = ''
-#             if len(words) > 0:
-#                 for word in words:
-#                     out = out + word + ' '
-#                 i = len(words) - 1
-#                 l = h.generate(i)
-#                 l.outputseq = out
-#                 n = h.viterbi(l)
-#                 print(n)
-
 if __name__ == "__main__" :
+    filename = sys.argv[1]
     h = HMM()
-    h.load('lander')
-    # h.load('partofspeech')
-    u = h.transitions
-    y = h.emissions
+    h.load(filename)
     # print(h.transitions)
     # print(h.emissions)
-    l = h.generate(4)
-    # print(l)
-    predicted_states = list(l.stateseq.split())
-    # print("actual end state: ")
-    # print(predicted_states[-1])
-    # l.outputseq = 'purr silent silent meow meow'
-    l.outputseq = '1,1 2,2 3,3 4,3'
-    # l.outputseq = 'the train is arriving now .'
-    k = h.forward(l)
-    print("predicted end state: ")
-    print(k)
 
-    n = h.viterbi(l)
-    print(n)
+    if sys.argv[2] == '--generate' :
+        l = h.generate(int(sys.argv[3]))
+        print(l)
+    elif sys.argv[2] == '--forward' :
+        file = open(sys.argv[3])
+        for line in file:
+            words = []
+            words = line.split()
+            out = ''
+            if len(words) > 0:
+                for word in words:
+                    out = out + word + ' '
+                i = len(words) - 1
+                l = h.generate(i)
+                l.outputseq = out
+                n = h.forward(l)
+                print("Most probable state:")
+                print(n)
+                if filename == 'lander' :
+                    if n == '4,3' or n == '3,4' or n == '2,5' or n == '4,4' or n == '5,5' :
+                        print("It is safe to land!")
+                    else:
+                        print("Oh no! It is not safe to land!")
+    elif sys.argv[2] == '--viterbi' :
+        file = open(sys.argv[3])
+        for line in file:
+            words = []
+            words = line.split()
+            out = ''
+            if len(words) > 0:
+                for word in words:
+                    out = out + word + ' '
+                i = len(words) - 1
+                l = h.generate(i)
+                l.outputseq = out
+                n = h.viterbi(l)
+                print(n)
+
+# if __name__ == "__main__" :
+#     h = HMM()
+#     # h.load('lander')
+#     # h.load('partofspeech')
+#     h.load('cat')
+#     u = h.transitions
+#     y = h.emissions
+#     # print(h.transitions)
+#     # print(h.emissions)
+#     l = h.generate(5)
+#     # print(l)
+#     predicted_states = list(l.stateseq.split())
+#     # print("actual end state: ")
+#     # print(predicted_states[-1])
+#     l.outputseq = 'purr silent silent meow meow'
+#     # l.outputseq = '1,1 2,2 3,3 4,3'
+#     # l.outputseq = 'the train is arriving now .'
+#     k = h.forward(l)
+#     print("predicted end state: ")
+#     print(k)
+#
+#     n = h.viterbi(l)
+#     print(n)
 
 
