@@ -134,7 +134,7 @@ class HMM:
         O = sequence.outputseq.split()
         col = len(O) + 1 #TODO might need to change back to + 1
         rows = len(self.transitions.keys())
-        M = numpy.empty((rows,col))
+        M = numpy.zeros((rows,col))
 
         ## set up the initial probabilities from the start state (states[0] to observation 1.
         M[0,0] = 1.0
@@ -211,8 +211,8 @@ class HMM:
         O = sequence.outputseq.split()
         col = len(O) + 1 #TODO might need to change back to + 1
         rows = len(self.transitions.keys())
-        N = numpy.empty((rows,col))
-        bp = numpy.empty((rows,col))
+        N = numpy.zeros((rows,col))
+        bp = numpy.zeros((rows,col))
 
         ## set up the initial probabilities from the start state (states[0] to observation 1.
         N[0,0] = 1.0
@@ -352,19 +352,20 @@ class HMM:
 
 if __name__ == "__main__" :
     h = HMM()
-    # h.load('lander')
-    h.load('partofspeech')
+    h.load('lander')
+    # h.load('partofspeech')
     u = h.transitions
+    y = h.emissions
     # print(h.transitions)
     # print(h.emissions)
-    l = h.generate(6)
+    l = h.generate(4)
     # print(l)
     predicted_states = list(l.stateseq.split())
     # print("actual end state: ")
     # print(predicted_states[-1])
     # l.outputseq = 'purr silent silent meow meow'
-    # l.outputseq = '1,1 2,2 2,2 3,3 4,3'
-    l.outputseq = 'the train is arriving now .'
+    l.outputseq = '1,1 2,2 3,3 4,3'
+    # l.outputseq = 'the train is arriving now .'
     k = h.forward(l)
     print("predicted end state: ")
     print(k)

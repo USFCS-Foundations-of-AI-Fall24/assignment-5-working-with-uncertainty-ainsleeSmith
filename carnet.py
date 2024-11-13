@@ -68,4 +68,26 @@ car_infer = VariableElimination(car_model)
 
 print(car_infer.query(variables=["Moves"],evidence={"Radio":"turns on", "Starts":"yes"}))
 
+# Given that the car will not move, what is the probability that the battery is not working?
+print(1 - car_infer.query(variables=["Battery"],evidence={"Moves":"no"}))
+
+# Given that the radio is not working, what is the probability that the car will not start?
+print(1 - car_infer.query(variables=["Starts"],evidence={"Radio":"Doesn't turn on"}))
+
+# Given that the battery is working, does the probability of the radio working
+# change if we discover that the car has gas in it?
+print(car_infer.query(variables=["Radio"],evidence={"Battery":"Works"}))
+print("Versus:")
+print(car_infer.query(variables=["Radio"],evidence={"Battery":"Works", "Gas":"full"}))
+
+# Given that the car doesn't move, how does the probability of the ignition failing
+# change if we observe that the car dies not have gas in it?
+
+
+# What is the probability that the car starts if the radio works and it has gas in it?
+print(car_infer.query(variables=["Starts"],evidence={"Radio":"turns on", "Gas":"full"}))
+
+
+
+
 
