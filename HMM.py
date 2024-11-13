@@ -312,8 +312,6 @@ if __name__ == "__main__" :
     filename = sys.argv[1]
     h = HMM()
     h.load(filename)
-    # print(h.transitions)
-    # print(h.emissions)
 
     if sys.argv[2] == '--generate' :
         l = h.generate(int(sys.argv[3]))
