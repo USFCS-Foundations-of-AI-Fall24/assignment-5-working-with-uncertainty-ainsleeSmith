@@ -298,9 +298,7 @@ if __name__ == "__main__" :
             if len(words) > 0:
                 for word in words:
                     out = out + word + ' '
-                i = len(words) - 1
-                l = h.generate(i)
-                l.outputseq = out
+                l = Sequence('', out)
                 n = h.forward(l)
                 print("Most probable state:")
                 print(n)
@@ -318,34 +316,8 @@ if __name__ == "__main__" :
             if len(words) > 0:
                 for word in words:
                     out = out + word + ' '
-                i = len(words) - 1
-                l = h.generate(i)
-                l.outputseq = out
+                l = Sequence('', out)
                 n = h.viterbi(l)
                 print(n)
-
-# if __name__ == "__main__" :
-#     h = HMM()
-#     # h.load('lander')
-#     # h.load('partofspeech')
-#     h.load('cat')
-#     u = h.transitions
-#     y = h.emissions
-#     # print(h.transitions)
-#     # print(h.emissions)
-#     l = h.generate(5)
-#     # print(l)
-#     predicted_states = list(l.stateseq.split())
-#     # print("actual end state: ")
-#     # print(predicted_states[-1])
-#     l.outputseq = 'purr silent silent meow meow'
-#     # l.outputseq = '1,1 2,2 3,3 4,3'
-#     # l.outputseq = 'the train is arriving now .'
-#     k = h.forward(l)
-#     print("predicted end state: ")
-#     print(k)
-#
-#     n = h.viterbi(l)
-#     print(n)
 
 
